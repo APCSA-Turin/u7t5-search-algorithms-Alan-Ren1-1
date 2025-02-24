@@ -2,23 +2,24 @@ package com.example.project.Spell_Checker;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Scanner;
-
 
 public class SpellChecker {
     private ArrayList<String> dictionary;
-    private int loopCounter = 0 ;
+    private int loopCounter = 0;
 
     public SpellChecker() {
         dictionary = new ArrayList<String>();
         importDictionary();
+        Collections.sort(dictionary); // Sort the dictionary for binary search
     }
 
     public ArrayList<String> getDictionary() {
         return dictionary;
     }
 
-    public int getLoopCounter(){
+    public int getLoopCounter() {
         return loopCounter;
     }
 
@@ -29,9 +30,9 @@ public class SpellChecker {
      *  prints that value out before returning.
      */
     public boolean linearSpellCheck(String word) {
-        loopCounter = 0; // for testing
+        loopCounter = 0; // Reset loop counter for testing
         for (String s : dictionary) {
-            loopCounter++; // for testing
+            loopCounter++; // Increment loop counter
             if (word.equals(s)) {
                 System.out.println("-- LINEAR SEARCH: Number of words checked (loop iterations): " + loopCounter);
                 return true;
@@ -41,8 +42,6 @@ public class SpellChecker {
         return false;
     }
 
-
-
     /** This uses BINARY search to find a word in dictionary and returns
      *  true if the word is in dictionary and false otherwise.
      *
@@ -50,7 +49,31 @@ public class SpellChecker {
      *  prints that value out before returning.
      */
     public boolean binarySpellCheck(String word) {
-        return false;
+        loopCounter = 0; // Reset loop counter for testing
+        int left = 0;
+        int right = dictionary.size() - 1;
+
+        while (left <= right) {
+            loopCounter++; // Increment loop counter for each iteration
+            int middle = left + (right - left) / 2;
+
+            // Debugging output to see progress
+            System.out.println("Checking middle: " + middle + " (word: " + dictionary.get(middle) + ")");
+
+            if (dictionary.get(middle).equals(word)) {
+                System.out.println("-- BINARY SEARCH: Word found after " + loopCounter + " iterations");
+                return true; // Word found
+            }
+
+            if (dictionary.get(middle).compareTo(word) < 0) {
+                left = middle + 1; // Search the right half
+            } else {
+                right = middle - 1; // Search the left half
+            }
+        }
+
+        System.out.println("-- BINARY SEARCH: Word not found after " + loopCounter + " iterations");
+        return false; // Word not found
     }
 
     // private helper method, called in the constructor, which loads the words
